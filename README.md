@@ -1,5 +1,7 @@
 # reddit-oauth
 
+[![NPM version](https://badge.fury.io/js/reddit-oauth.svg)](http://badge.fury.io/js/reddit-oauth)
+
 reddit-oauth is a wrapper around the Reddit API providing both OAuth and password authentication.
 
 ## Requirements

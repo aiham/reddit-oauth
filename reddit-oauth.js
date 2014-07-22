@@ -108,7 +108,7 @@ RedditApi.prototype = {
 
   },
 
-  oAuth: function (state, scope, redirect_fn, state) {
+  oAuthUrl: function (state, scope) {
 
     if (typeof scope === 'string') {
       scope = [scope];
@@ -122,7 +122,7 @@ RedditApi.prototype = {
     url += '&duration=permanent';
     url += '&scope=' + encodeURIComponent(scope.join(','));
 
-    redirect_fn(url);
+    return url;
 
   },
 

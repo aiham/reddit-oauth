@@ -126,7 +126,7 @@ RedditApi.prototype = {
 
   },
 
-  oAuthContinue: function (state, query, callback) {
+  oAuthTokens: function (state, query, callback) {
 
     if (query.state !== state || !query.code) {
       return false;

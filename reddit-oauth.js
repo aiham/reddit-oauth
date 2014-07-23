@@ -64,17 +64,22 @@ RedditApi.prototype = {
       return function (error, response, body) {
 
         if (!error && response.statusCode === 200) {
-          var data = JSON.parse(body);
-          callback.call(api, data);
+          response.jsonData = JSON.parse(body);
         } else if (!is_refreshing_token && response.statusCode === 401 && api.refresh_token) {
-          api.refreshToken(function () {
+          api.refreshToken(function (success) {
 
-            api.request(path, options, callback);
+            if (success) {
+              api.request(path, options, callback);
+            } else {
+              callback.call(api, error, response, data);
+            }
 
           });
+          return;
         } else {
-          console.log('Error:', error);
+          console.log('reddit-oauth Error:', error);
         }
+        callback.call(api, error, response, body);
 
       };
 
@@ -97,11 +102,14 @@ RedditApi.prototype = {
         username: this.app_id,
         password: this.app_secret
       }
-    }, function (data) {
+    }, function (error, response, body) {
 
-      this.access_token = data.access_token;
+      if (!error) {
+        this.access_token = response.jsonData.access_token;
+      }
+
       if (callback) {
-        callback();
+        callback(!error);
       }
 
     });
@@ -129,7 +137,8 @@ RedditApi.prototype = {
   oAuthTokens: function (state, query, callback) {
 
     if (query.state !== state || !query.code) {
-      return false;
+      callback(false);
+      return;
     }
 
     this.access_token = null;
@@ -145,16 +154,18 @@ RedditApi.prototype = {
         username: this.app_id,
         password: this.app_secret
       }
-    }, function (data) {
+    }, function (error, response, body) {
 
-      this.access_token = data.access_token;
-      this.refresh_token = data.refresh_token;
+      if (!error) {
+        this.access_token = response.jsonData.access_token;
+        this.refresh_token = response.jsonData.refresh_token;
+      }
+
       if (callback) {
-        callback();
+        callback(!error);
       }
 
     });
-    return true;
 
   },
 
@@ -172,11 +183,14 @@ RedditApi.prototype = {
         username: this.app_id,
         password: this.app_secret
       }
-    }, function (data) {
+    }, function (error, response, body) {
 
-      this.access_token = data.access_token;
+      if (!error) {
+        this.access_token = response.jsonData.access_token;
+      }
+
       if (callback) {
-        callback();
+        callback(!error);
       }
 
     }, true);

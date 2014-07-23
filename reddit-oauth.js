@@ -94,7 +94,7 @@ RedditApi.prototype = {
     this.access_token = null;
 
     this.request('/api/v1/access_token', {
-      method; 'POST',
+      method: 'POST',
       form: {
         grant_type: 'password',
         username: username,
@@ -146,7 +146,7 @@ RedditApi.prototype = {
     this.access_token = null;
 
     this.request('/api/v1/access_token', {
-      method; 'POST',
+      method: 'POST',
       form: {
         grant_type: 'authorization_code',
         code: query.code,
@@ -176,7 +176,7 @@ RedditApi.prototype = {
     this.access_token = null;
 
     this.request('/api/v1/access_token', {
-      method; 'POST',
+      method: 'POST',
       form: {
         grant_type: 'refresh_token',
         refresh_token: this.refresh_token

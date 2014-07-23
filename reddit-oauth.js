@@ -52,8 +52,10 @@ RedditApi.prototype = {
       options.headers['Authorization'] = 'bearer ' + this.access_token;
     }
 
-    var subdomain = this.isAuthed() ? 'oauth' : 'ssl';
-    options.url = 'https://' + subdomain + '.reddit.com' + path;
+    if (!options.url) {
+      var subdomain = this.isAuthed() ? 'oauth' : 'ssl';
+      options.url = 'https://' + subdomain + '.reddit.com' + path;
+    }
 
     if (!options.method) {
       options.method = 'GET';

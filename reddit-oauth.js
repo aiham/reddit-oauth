@@ -92,6 +92,7 @@ RedditApi.prototype = {
   passAuth: function (username, password, callback) {
 
     this.access_token = null;
+    this.refresh_token = null;
 
     this.request('/api/v1/access_token', {
       method: 'POST',
@@ -144,6 +145,7 @@ RedditApi.prototype = {
     }
 
     this.access_token = null;
+    this.refresh_token = null;
 
     this.request('/api/v1/access_token', {
       method: 'POST',

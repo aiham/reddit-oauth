@@ -38,8 +38,12 @@ Queue.prototype = {
         this.is_scheduled = true;
         setTimeout((function (queue) {
 
-          queue.is_scheduled = false;
-          queue.next();
+          return function () {
+
+            queue.is_scheduled = false;
+            queue.next();
+
+          };
 
         })(this), buffer - now);
       }

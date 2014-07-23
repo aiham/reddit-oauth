@@ -1,6 +1,6 @@
 {
   "name": "reddit-oauth",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Reddit API wrapper",
   "main": "reddit-oauth.js",
   "scripts": {

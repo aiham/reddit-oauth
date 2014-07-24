@@ -2,9 +2,9 @@ var Queue = function (request_buffer) {
 
   this.current = null;
   this.requests = [];
-  this.request_buffer = request_buffer;
+  this.request_buffer = request_buffer || 0;
   this.last_request_time = 0;
-  this.is_scheduled = false;
+  this.timer = null;
 
 };
 
@@ -34,19 +34,15 @@ Queue.prototype = {
     var now = this.now();
     var buffer = this.last_request_time + this.request_buffer;
     if (now < buffer) {
-      if (!this.is_scheduled) {
-        this.is_scheduled = true;
-        setTimeout((function (queue) {
+      this.setTimer(buffer - now, (function (queue) {
 
-          return function () {
+        return function () {
 
-            queue.is_scheduled = false;
-            queue.next();
+          queue.next();
 
-          };
+        };
 
-        })(this), buffer - now);
-      }
+      })(this));
       return;
     }
 
@@ -58,12 +54,38 @@ Queue.prototype = {
         var request = queue.current;
         queue.current = null;
         queue.last_request_time = queue.now();
-        request.callback(error, response, body);
+        if (request && request.callback) {
+          request.callback(error, response, body);
+        }
         queue.next();
 
       };
 
     })(this));
+
+  },
+
+  setTimer: function (time, callback) {
+
+    this.clearTimer();
+    this.timer = setTimeout(callback, time);
+
+  },
+
+  clearTimer: function () {
+
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.timer = null;
+
+  },
+
+  kill: function () {
+
+    this.clearTimer();
+    this.requests = [];
+    this.current = null;
 
   }
 

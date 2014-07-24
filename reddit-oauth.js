@@ -229,6 +229,45 @@ RedditApi.prototype = {
     }
     this.request(path, options, callback);
 
+  },
+
+  getListing: function (path, params, callback, after, count) {
+
+    if (!count) {
+      count = 0;
+    }
+
+    var fullPath = path;
+
+    if (after) {
+      fullPath += '?after=' + encodeURIComponent(after) + '&count=' + encodeURIComponent(count);
+    }
+
+    this.get(fullPath, params, (function (reddit) {
+
+      return function (error, response, body) {
+
+        if (error || response.statusCode !== 200) {
+          callback(error, response, body);
+          return;
+        }
+
+        var nextAfter = response.jsonData.data.after;
+        var nextCount = count + response.jsonData.data.children.length;
+        var next = nextAfter === null ? null : function () {
+
+          reddit.getListing(path, params, callback, nextAfter, nextCount);
+
+        };
+
+        if (callback) {
+          callback(error, response, body, next);
+        }
+
+      };
+
+    })(this));
+
   }
 
 };

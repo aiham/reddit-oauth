@@ -74,7 +74,14 @@ Queue.prototype = {
   setTimer: function (time, callback) {
 
     this.clearTimer();
-    this.timer = setTimeout(callback, time);
+
+    var that = this;
+    this.timer = setTimeout(function () {
+
+      that.timer = null;
+      callback();
+
+    }, time);
 
   },
 

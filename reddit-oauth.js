@@ -22,9 +22,13 @@ RedditRequest.prototype = {
 
 var RedditApi = function (options) {
 
+  if (!options || typeof options !== 'object') throw 'Invalid options: ' + options;
+  if (typeof options.app_id !== 'string') throw 'Invalid app ID: ' + options.app_id;
+  if (typeof options.app_secret !== 'string') throw 'Invalid app secret: ' + options.app_secret;
+
   this.app_id = options.app_id;
   this.app_secret = options.app_secret;
-  this.redirect_uri = options.redirect_uri;
+  this.redirect_uri = options.redirect_uri || null;
   this.user_agent = options.user_agent || 'reddit-oauth/1.0.5 by aihamh';
   this.access_token = options.access_token || null;
   this.refresh_token = options.refresh_token || null;
@@ -43,6 +47,10 @@ RedditApi.prototype = {
   },
 
   request: function (path, options, callback, is_refreshing_token) {
+
+    if (!options) {
+      options = {};
+    }
 
     if (!options.headers) {
       options.headers = {};
@@ -129,7 +137,7 @@ RedditApi.prototype = {
     url += '?client_id=' + encodeURIComponent(this.app_id);
     url += '&response_type=code';
     url += '&state=' + encodeURIComponent(state);
-    url += '&redirect_uri=' + encodeURIComponent(this.redirect_uri);
+    url += '&redirect_uri=' + encodeURIComponent(this.redirect_uri || '');
     url += '&duration=permanent';
     url += '&scope=' + encodeURIComponent(scope.join(','));
 
@@ -152,7 +160,7 @@ RedditApi.prototype = {
       form: {
         grant_type: 'authorization_code',
         code: query.code,
-        redirect_uri: this.redirect_uri
+        redirect_uri: this.redirect_uri || ''
       },
       auth: {
         username: this.app_id,
@@ -203,10 +211,11 @@ RedditApi.prototype = {
 
   get: function (path, params, callback) {
 
-    var options = {};
+    var options = null;
     if (params) {
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
+          if (!options) options = {};
           options.form = params;
           break;
         }

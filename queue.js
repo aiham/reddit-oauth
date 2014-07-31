@@ -14,6 +14,12 @@ Queue.prototype = {
 
   add: function (request) {
 
+    if (typeof request !== 'object') {
+      throw 'Invalid request: ' + request;
+    }
+    if (request.callback && typeof request.callback !== 'function') {
+      throw 'Invalid request callback: ' + request.callback;
+    }
     this.requests.push(request);
     this.next();
 

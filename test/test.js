@@ -12,6 +12,7 @@ describe('Queue', function () {
     this.body = body;
 
   };
+  TestRequest.processTime = 500;
   TestRequest.prototype = {
 
     constructor: TestRequest,
@@ -23,7 +24,7 @@ describe('Queue', function () {
 
         callback(that.error, that.response, that.body);
 
-      }, 500);
+      }, TestRequest.processTime);
 
     }
 
@@ -68,6 +69,69 @@ describe('Queue', function () {
       }, /^Invalid request callback/);
 
     });
+
+    it('should add and process a mock request that takes half a second', function (done) {
+
+      assert.doesNotThrow(function () {
+        var queue = new Queue();
+        var start = (new Date()).getTime();
+        queue.add(new TestRequest(function (error, response, body) {
+
+          assert.strictEqual(error, 'fake_error');
+          assert.strictEqual(response, 'fake_response');
+          assert.strictEqual(body, 'fake_body');
+          var end = (new Date()).getTime();
+          var difference = end - start;
+          assert.ok(difference >= TestRequest.processTime);
+          done();
+
+        }, 'fake_error', 'fake_response', 'fake_body'));
+      });
+
+    });
+
+    it('should add and process multiple requests while waiting 1 second between each', function (done) {
+
+      assert.doesNotThrow(function () {
+        var waitTime = 1000;
+        var queue = new Queue(waitTime);
+        var start1 = (new Date()).getTime(), start2;
+        var end1, end2;
+        var difference1, difference2;
+
+        queue.add(new TestRequest(function (error, response, body) {
+
+          assert.strictEqual(error, 'fake_error1');
+          assert.strictEqual(response, 'fake_response1');
+          assert.strictEqual(body, 'fake_body1');
+          end1 = (new Date()).getTime();
+          difference1 = end1 - start1;
+          assert.ok(difference1 >= TestRequest.processTime);
+          done();
+
+        }, 'fake_error1', 'fake_response1', 'fake_body1'));
+
+        start2 = (new Date()).getTime();
+        queue.add(new TestRequest(function (error, response, body) {
+
+          assert.strictEqual(error, 'fake_error2');
+          assert.strictEqual(response, 'fake_response2');
+          assert.strictEqual(body, 'fake_body2');
+          end2 = (new Date()).getTime();
+          difference2 = end2 - start2;
+          assert.ok(difference2 >= TestRequest.processTime);
+          assert.ok((end2 - start1) >= (TestRequest.processTime * 2 + waitTime)); // 2 processes + 1 wait
+          assert.strictEqual(queue.requests.length, 0);
+          assert.strictEqual(queue.current, null);
+          done();
+
+        }, 'fake_error2', 'fake_response2', 'fake_body2'));
+
+        assert.strictEqual(queue.requests.length, 1);
+        assert.strictEqual(typeof queue.current, 'object');
+      });
+
+    });
   });
 
   describe('now()', function () {
@@ -84,7 +148,20 @@ describe('Queue', function () {
   });
 
   describe('next()', function () {
+    it('should do nothing if the queue is empty', function () {
 
+      assert.doesNotThrow(function () {
+        var queue = new Queue();
+        assert.strictEqual(queue.current, null);
+        assert.strictEqual(queue.requests.length, 0);
+        assert.strictEqual(queue.timer, null);
+        queue.next();
+        assert.strictEqual(queue.current, null);
+        assert.strictEqual(queue.requests.length, 0);
+        assert.strictEqual(queue.timer, null);
+      });
+
+    });
   });
 
   describe('setTimer()', function () {

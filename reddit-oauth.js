@@ -153,7 +153,7 @@ RedditApi.prototype = {
     url += '&state=' + encodeURIComponent(state);
     url += '&redirect_uri=' + encodeURIComponent(this.redirect_uri || '');
     url += '&duration=permanent';
-    url += '&scope=' + encodeURIComponent(scope.join(','));
+    url += '&scope=' + encodeURIComponent(scope);
 
     return url;
 

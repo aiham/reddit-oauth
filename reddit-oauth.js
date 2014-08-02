@@ -74,7 +74,11 @@ RedditApi.prototype = {
       return function (error, response, body) {
 
         if (!error && response.statusCode === 200) {
-          response.jsonData = JSON.parse(body);
+          try {
+            response.jsonData = JSON.parse(body);
+          } catch (e) {
+            error = e;
+          }
         } else if (!is_refreshing_token && response.statusCode === 401 && api.refresh_token) {
           api.refreshToken(function (success) {
 

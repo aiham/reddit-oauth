@@ -107,7 +107,6 @@ describe('Queue', function () {
           end1 = (new Date()).getTime();
           difference1 = end1 - start1;
           assert.ok(difference1 >= TestRequest.processTime);
-          done();
 
         }, 'fake_error1', 'fake_response1', 'fake_body1'));
 

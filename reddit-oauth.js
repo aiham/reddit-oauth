@@ -1,5 +1,6 @@
 var request = require('request');
 var Queue = require('./queue');
+var util = require('util');
 
 var RedditRequest = function (options, callback) {
 
@@ -133,8 +134,12 @@ RedditApi.prototype = {
 
   oAuthUrl: function (state, scope) {
 
-    if (typeof scope === 'string') {
-      scope = [scope];
+    if (util.isArray(scope)) {
+      scope = scope.join(',');
+    }
+
+    if (typeof scope !== 'string') {
+      throw 'Invalid scope: ' + scope;
     }
 
     var url = 'https://ssl.reddit.com/api/v1/authorize';

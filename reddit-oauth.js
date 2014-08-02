@@ -120,12 +120,14 @@ RedditApi.prototype = {
       }
     }, function (error, response, body) {
 
-      if (!error) {
+      var success = !error && typeof response.jsonData === 'string' && response.jsonData.length > 0;
+
+      if (success) {
         this.access_token = response.jsonData.access_token;
       }
 
       if (callback) {
-        callback(!error);
+        callback(success);
       }
 
     });

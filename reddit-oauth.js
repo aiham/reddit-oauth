@@ -43,7 +43,7 @@ RedditApi.prototype = {
 
   isAuthed: function () {
 
-    return !!this.access_token;
+    return typeof this.access_token === 'string' && this.access_token.length > 0;
 
   },
 

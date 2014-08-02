@@ -90,10 +90,10 @@ describe('Queue', function () {
 
     });
 
-    it('should add and process multiple requests while waiting 1 second between each', function (done) {
+    it('should add and process multiple requests while waiting 400 milliseconds between each', function (done) {
 
       assert.doesNotThrow(function () {
-        var waitTime = 1000;
+        var waitTime = 400;
         var queue = new Queue(waitTime);
         var start1 = (new Date()).getTime(), start2;
         var end1, end2;

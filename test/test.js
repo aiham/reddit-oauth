@@ -271,8 +271,140 @@ describe('RedditApi', function () {
     });
   });
 
-  describe('request()', function (done) {
-    it('should ?', function () {
+  describe('request()', function () {
+    it('should fail when code 404 when invalid path is provided', function (done) {
+
+      var reddit = new RedditApi({
+        app_id: 'fake',
+        app_secret: 'fake'
+      });
+      reddit.request(
+        '/an-invalid-api-path-that-does-not-exist',
+        null,
+        function (error, response, body) {
+
+          assert.ok(error);
+          assert.strictEqual(response.statusCode, 404);
+          done();
+
+        }
+      );
+
+    });
+
+    it('should successfully get the google homepage but fail to parse it', function (done) {
+
+      var reddit = new RedditApi({
+        app_id: 'fake',
+        app_secret: 'fake'
+      });
+      reddit.request(
+        null,
+        {url: 'http://www.google.com'},
+        function (error, response, body) {
+
+          assert.ok(error);
+          assert.ok(/^SyntaxError/.test(error));
+          assert.strictEqual(response.statusCode, 200);
+          done();
+
+        }
+      );
+
+    });
+  });
+
+  describe('passAuth()', function () {
+    it('should fail to authorise with invalid app_id/app_secret', function (done) {
+
+      var reddit = new RedditApi({
+        app_id: 'fake_app_id',
+        app_secret: 'fake_app_secret'
+      });
+      reddit.passAuth('fake_username', 'fake_password', function (success) {
+
+        assert.ok(!success);
+        assert.ok(!reddit.isAuthed());
+        done();
+
+      });
+
+    });
+
+    it('should fail to authorise with invalid username/password', function (done) {
+
+      var reddit = new RedditApi({
+        app_id: 'real_app_id',
+        app_secret: 'real_app_secret'
+      });
+      reddit.passAuth('fake_username', 'fake_password', function (success) {
+
+        assert.ok(!success);
+        assert.ok(!reddit.isAuthed());
+        done();
+
+      });
+
+    });
+
+    it('should successfully authorise with valid username/password', function (done) {
+
+      var reddit = new RedditApi({
+        app_id: 'real_app_id',
+        app_secret: 'real_app_secret'
+      });
+      reddit.passAuth('real_username', 'real_password', function (success) {
+
+        assert.ok(success);
+        assert.ok(reddit.isAuthed());
+        done();
+
+      });
+
+    });
+  });
+
+  describe('oAuthUrl()', function () {
+    it('should fail when invalid scope is provided', function () {
+
+      var reddit = new RedditApi({
+        app_id: 'fake_app_id',
+        app_secret: 'fake_app_secret',
+        redirect_uri: 'fake_redirect_uri'
+      });
+
+      assert.throws(function () {
+        reddit.oAuthUrl();
+      }, /^Invalid scope/);
+
+      assert.throws(function () {
+        reddit.oAuthUrl('fake_state');
+      }, /^Invalid scope/);
+
+      assert.throws(function () {
+        reddit.oAuthUrl('fake_state', 1);
+      }, /^Invalid scope/);
+
+      assert.throws(function () {
+        reddit.oAuthUrl('fake_state', null);
+      }, /^Invalid scope/);
+
+      assert.throws(function () {
+        reddit.oAuthUrl('fake_state', {});
+      }, /^Invalid scope/);
+
+    });
+
+    it('should return a valid URL for authorisation with Reddit', function () {
+
+      var reddit = new RedditApi({
+        app_id: 'fake_app_id',
+        app_secret: 'fake_app_secret',
+        redirect_uri: 'fake_redirect_uri'
+      });
+      var actual = reddit.oAuthUrl('fake_state', 'fake_scope');
+      var expected = 'https://ssl.reddit.com/api/v1/authorize?client_id=fake_app_id&response_type=code&state=fake_state&redirect_uri=fake_redirect_uri&duration=permanent&scope=fake_scope';
+      assert.strictEqual(actual, expected);
 
     });
   });

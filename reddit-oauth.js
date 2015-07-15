@@ -218,7 +218,12 @@ RedditApi.prototype = {
       }
     }, function (error, response, body) {
 
-      if (!error) {
+      var success = !error &&
+                    typeof response.jsonData === 'object' &&
+                    typeof response.jsonData.access_token === 'string' &&
+                    response.jsonData.access_token.length > 0;
+
+      if (success) {
         this.access_token = response.jsonData.access_token;
       }
 

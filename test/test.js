@@ -2,6 +2,7 @@ var assert = require('assert');
 var RedditApi = require('../reddit-oauth');
 var Queue = require('../queue');
 var util = require('util');
+var config = require('./config.json');
 
 describe('Queue', function () {
   var TestRequest = function (callback, error, response, body) {
@@ -283,8 +284,9 @@ describe('RedditApi', function () {
         null,
         function (error, response, body) {
 
-          assert.ok(error);
+          assert.equal(error, null);
           assert.strictEqual(response.statusCode, 404);
+          assert.strictEqual(response.statusMessage, 'Not Found');
           done();
 
         }
@@ -350,10 +352,10 @@ describe('RedditApi', function () {
     it('should successfully authorise with valid username/password', function (done) {
 
       var reddit = new RedditApi({
-        app_id: 'real_app_id',
-        app_secret: 'real_app_secret'
+        app_id: config.redditApi.app.id,
+        app_secret: config.redditApi.app.secret
       });
-      reddit.passAuth('real_username', 'real_password', function (success) {
+      reddit.passAuth(config.redditApi.user.username, config.redditApi.user.password, function (success) {
 
         assert.ok(success);
         assert.ok(reddit.isAuthed());

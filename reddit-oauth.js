@@ -92,7 +92,7 @@ RedditApi.prototype = {
           });
           return;
         } else {
-          console.log('reddit-oauth Error:', error, ', Status code:', response.statusCode);
+          console.log('reddit-oauth Error:', error, ', Status code:', response.statusCode, ', Status message:', response.statusMessage);
         }
         callback.call(api, error, response, body);
 

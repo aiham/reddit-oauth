@@ -272,7 +272,7 @@ describe('RedditApi', function () {
   });
 
   describe('request()', function () {
-    it('should fail when code 404 when invalid path is provided', function (done) {
+    it('should fail with code 404 when invalid path is provided', function (done) {
 
       var reddit = new RedditApi({
         app_id: 'fake',
@@ -403,7 +403,13 @@ describe('RedditApi', function () {
         redirect_uri: 'fake_redirect_uri'
       });
       var actual = reddit.oAuthUrl('fake_state', 'fake_scope');
-      var expected = 'https://ssl.reddit.com/api/v1/authorize?client_id=fake_app_id&response_type=code&state=fake_state&redirect_uri=fake_redirect_uri&duration=permanent&scope=fake_scope';
+      var expected = 'https://ssl.reddit.com/api/v1/authorize' +
+        '?client_id=fake_app_id' +
+        '&response_type=code' +
+        '&state=fake_state' +
+        '&redirect_uri=fake_redirect_uri' +
+        '&duration=permanent' +
+        '&scope=fake_scope';
       assert.strictEqual(actual, expected);
 
     });

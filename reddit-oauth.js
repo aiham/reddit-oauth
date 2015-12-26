@@ -147,13 +147,13 @@ RedditApi.prototype = {
       throw 'Invalid scope: ' + scope;
     }
 
-    var url = 'https://ssl.reddit.com/api/v1/authorize';
-    url += '?client_id=' + encodeURIComponent(this.app_id);
-    url += '&response_type=code';
-    url += '&state=' + encodeURIComponent(state);
-    url += '&redirect_uri=' + encodeURIComponent(this.redirect_uri || '');
-    url += '&duration=permanent';
-    url += '&scope=' + encodeURIComponent(scope);
+    var url = 'https://ssl.reddit.com/api/v1/authorize' +
+      '?client_id=' + encodeURIComponent(this.app_id) +
+      '&response_type=code' +
+      '&state=' + encodeURIComponent(state) +
+      '&redirect_uri=' + encodeURIComponent(this.redirect_uri || '') +
+      '&duration=permanent' +
+      '&scope=' + encodeURIComponent(scope);
 
     return url;
 

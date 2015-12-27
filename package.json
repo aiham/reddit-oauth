@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "./node_modules/.bin/mocha",
+    "docs": "jsdoc -P ./package.json -r -R ./README.md --debug --verbose -d ./docs ./lib"
   },
   "repository": {
     "type": "git",

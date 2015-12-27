@@ -1,34 +1,30 @@
 'use strict';
 
-var assert = require('assert');
-var Queue = require('../lib/queue');
+var assert = require('assert'),
+    sinon = require('sinon'),
+    RedditRequest = require('../lib/request'),
+    Queue = require('../lib/queue'),
+    testData = {
+        error: 'fake_error',
+        response: 'fake_response',
+        body: 'fake_body'
+    },
+    fakeProcessTime = 500,
+    sendStub;
 
 describe('Queue', function () {
-  var TestRequest = function (callback, error, response, body) {
-
-    this.callback = callback;
-    this.error = error;
-    this.response = response;
-    this.body = body;
-
-  };
-  TestRequest.processTime = 500;
-  TestRequest.prototype = {
-
-    constructor: TestRequest,
-
-    send: function (callback) {
-
-      var that = this;
+  beforeEach(function () {
+    sendStub = sinon.stub(RedditRequest.prototype, 'send', function (callback) {
       setTimeout(function () {
+        callback(testData.error, testData.response, testData.body);
+      }, fakeProcessTime);
+    });
+  });
 
-        callback(that.error, that.response, that.body);
-
-      }, TestRequest.processTime);
-
-    }
-
-  };
+  afterEach(function () {
+    sendStub.restore();
+    sendStub = null;
+  });
 
   describe('new Queue()', function () {
     it('should initialise the object successfully', function () {
@@ -65,7 +61,11 @@ describe('Queue', function () {
       }, /^Invalid request/);
 
       assert.throws(function () {
-        queue.add({callback: 'fake'});
+        queue.add({});
+      }, /^Invalid request/);
+
+      assert.throws(function () {
+        queue.add(new RedditRequest(null, 'fake'));
       }, /^Invalid request callback/);
 
     });
@@ -75,17 +75,15 @@ describe('Queue', function () {
       assert.doesNotThrow(function () {
         var queue = new Queue();
         var start = (new Date()).getTime();
-        queue.add(new TestRequest(function (error, response, body) {
-
-          assert.strictEqual(error, 'fake_error');
-          assert.strictEqual(response, 'fake_response');
-          assert.strictEqual(body, 'fake_body');
+        queue.add(new RedditRequest(null, function (error, response, body) {
+          assert.strictEqual(error, testData.error);
+          assert.strictEqual(response, testData.response);
+          assert.strictEqual(body, testData.body);
           var end = (new Date()).getTime();
           var difference = end - start;
-          assert.ok(difference >= TestRequest.processTime);
+          assert.ok(difference >= fakeProcessTime);
           done();
-
-        }, 'fake_error', 'fake_response', 'fake_body'));
+        }));
       });
 
     });
@@ -99,35 +97,32 @@ describe('Queue', function () {
         var end1, end2;
         var difference1, difference2;
 
-        queue.add(new TestRequest(function (error, response, body) {
-
-          assert.strictEqual(error, 'fake_error1');
-          assert.strictEqual(response, 'fake_response1');
-          assert.strictEqual(body, 'fake_body1');
+        queue.add(new RedditRequest(null, function (error, response, body) {
+          assert.strictEqual(error, testData.error);
+          assert.strictEqual(response, testData.response);
+          assert.strictEqual(body, testData.body);
           end1 = (new Date()).getTime();
           difference1 = end1 - start1;
-          assert.ok(difference1 >= TestRequest.processTime);
-
-        }, 'fake_error1', 'fake_response1', 'fake_body1'));
+          assert.ok(difference1 >= fakeProcessTime);
+        }));
 
         start2 = (new Date()).getTime();
-        queue.add(new TestRequest(function (error, response, body) {
-
-          assert.strictEqual(error, 'fake_error2');
-          assert.strictEqual(response, 'fake_response2');
-          assert.strictEqual(body, 'fake_body2');
+        queue.add(new RedditRequest(null, function (error, response, body) {
+          assert.strictEqual(error, testData.error);
+          assert.strictEqual(response, testData.response);
+          assert.strictEqual(body, testData.body);
           end2 = (new Date()).getTime();
           difference2 = end2 - start2;
-          assert.ok(difference2 >= TestRequest.processTime);
-          assert.ok((end2 - start1) >= (TestRequest.processTime * 2 + waitTime)); // 2 processes + 1 wait
+          assert.ok(difference2 >= fakeProcessTime);
+
+          assert.ok((end2 - start1) >= (fakeProcessTime * 2 + waitTime)); // 2 processes + 1 wait
           assert.strictEqual(queue.requests.length, 0);
           assert.strictEqual(queue.current, null);
           done();
-
-        }, 'fake_error2', 'fake_response2', 'fake_body2'));
+        }));
 
         assert.strictEqual(queue.requests.length, 1);
-        assert.strictEqual(typeof queue.current, 'object');
+        assert(queue.current instanceof RedditRequest);
       });
 
     });

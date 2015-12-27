@@ -1,6 +1,6 @@
 var assert = require('assert');
-var RedditApi = require('../reddit-oauth');
-var Queue = require('../queue');
+var RedditApi = require('../lib');
+var Queue = require('../lib/queue');
 var util = require('util');
 var config = require('./config.json');
 

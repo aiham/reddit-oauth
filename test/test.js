@@ -1,7 +1,6 @@
 var assert = require('assert');
 var RedditApi = require('../lib');
 var Queue = require('../lib/queue');
-var util = require('util');
 var config = require('./config.json');
 
 describe('Queue', function () {
@@ -42,7 +41,7 @@ describe('Queue', function () {
       assert.doesNotThrow(function () {
         var queue = new Queue(1000);
         assert.strictEqual(queue.current, null);
-        assert.ok(util.isArray(queue.requests));
+        assert.ok(Array.isArray(queue.requests));
         assert.strictEqual(queue.requests.length, 0);
         assert.strictEqual(queue.request_buffer, 1000);
         assert.strictEqual(queue.last_request_time, 0);
@@ -208,7 +207,7 @@ describe('Queue', function () {
       assert.strictEqual(typeof queue.timer, 'object');
       queue.kill();
       assert.strictEqual(queue.timer, null);
-      assert.ok(util.isArray(queue.requests));
+      assert.ok(Array.isArray(queue.requests));
       assert.strictEqual(queue.requests.length, 0);
       assert.strictEqual(queue.current, null);
 

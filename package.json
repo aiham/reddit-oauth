@@ -1,36 +1,36 @@
 {
-  "name": "reddit-oauth",
-  "version": "1.0.7",
-  "description": "Reddit API wrapper",
-  "main": "lib/index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha",
-    "docs": "jsdoc -P ./package.json -r -R ./README.md --debug --verbose -d ./docs ./lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aiham/reddit-oauth.git"
-  },
-  "keywords": [
-    "reddit",
-    "api",
-    "wrapper",
-    "oauth"
-  ],
-  "author": "Aiham Hammami <aiham@aiham.net> (http://www.aiham.net/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/aiham/reddit-oauth/issues"
-  },
-  "homepage": "https://github.com/aiham/reddit-oauth",
-  "dependencies": {
-    "request": "^2.67.0"
-  },
-  "devDependencies": {
-    "mocha": "^2.3.4",
-    "sinon": "^1.17.2"
-  }
+    "name": "reddit-oauth",
+    "version": "1.0.7",
+    "description": "Reddit API wrapper",
+    "main": "lib/index.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha",
+        "docs": "jsdoc -P ./package.json -r -R ./README.md --debug --verbose -d ./docs ./lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aiham/reddit-oauth.git"
+    },
+    "keywords": [
+        "reddit",
+        "api",
+        "wrapper",
+        "oauth"
+    ],
+    "author": "Aiham Hammami <aiham@aiham.net> (http://www.aiham.net/)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/aiham/reddit-oauth/issues"
+    },
+    "homepage": "https://github.com/aiham/reddit-oauth",
+    "dependencies": {
+        "request": "^2.67.0"
+    },
+    "devDependencies": {
+        "mocha": "^2.3.4",
+        "sinon": "^1.17.2"
+    }
 }

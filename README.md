@@ -119,6 +119,16 @@ reddit.post(
 
 Tests written with mocha and sinon.
 
+Copy `test/config.template.json` to `test/config.json` and add your own app and user credentials. Then run:
+
 ```sh
 npm test
+```
+
+## Generate Documentation
+
+Documentation can be generated with jsdoc by running:
+
+```sh
+npm run docs
 ```

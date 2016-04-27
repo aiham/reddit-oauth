@@ -1,7 +1,7 @@
 {
     "name": "reddit-oauth",
-    "version": "1.0.8",
-    "description": "Reddit API wrapper",
+    "version": "1.1.0",
+    "description": "Reddit API wrapper with both OAuth and username/password authentication",
     "main": "lib/index.js",
     "directories": {
         "test": "test"
@@ -18,7 +18,8 @@
         "reddit",
         "api",
         "wrapper",
-        "oauth"
+        "oauth",
+        "authentication"
     ],
     "author": "Aiham Hammami <aiham@aiham.net> (http://www.aiham.net/)",
     "license": "MIT",

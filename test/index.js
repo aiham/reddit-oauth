@@ -2,7 +2,6 @@
 
 var assert = require('assert');
 var RedditApi = require('../lib');
-var Queue = require('../lib/queue');
 var config = require('./config.json');
 
 describe('RedditApi', function () {
@@ -34,7 +33,7 @@ describe('RedditApi', function () {
                 assert.ok(/^reddit-oauth\/\d+\.\d+\.\d+ by aihamh$/.test(reddit.user_agent));
                 assert.strictEqual(reddit.access_token, null);
                 assert.strictEqual(reddit.refresh_token, null);
-                assert.ok(reddit.queue instanceof Queue);
+                assert.ok(reddit.throttled_request instanceof Function);
             });
 
         });

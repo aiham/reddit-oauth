@@ -117,7 +117,7 @@ reddit.post(
 
 ## Run Tests
 
-Tests written with mocha and sinon.
+Tests written with mocha.
 
 Copy `test/config.template.json` to `test/config.json` and add your own app and user credentials. Then run:
 

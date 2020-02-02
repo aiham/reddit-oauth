@@ -1,3 +1,5 @@
+**Note:** Not maintained
+
 # reddit-oauth
 
 [![NPM version](https://badge.fury.io/js/reddit-oauth.svg)](http://badge.fury.io/js/reddit-oauth)
